@@ -22,7 +22,9 @@ public class NotificationActivity extends AppCompatActivity {
 
     ActivityNotificationBinding binding;
 
-    String canal1 = "importanteDefault";
+    private static final  String CANAL_DEFAULT = "canal_importance_default";
+    private static final int NOTIFICATION_ID = 1;
+    private static final int PERMISSION_REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     public void crearCanalesNotificacion() {
 
-        NotificationChannel channel = new NotificationChannel(canal1,
+        NotificationChannel channel = new NotificationChannel(CANAL_DEFAULT,
                 "Canal notificaciones default",
                 NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription("Canal para notificaciones con prioridad default");
@@ -57,7 +59,7 @@ public class NotificationActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ActivityCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
 
-            ActivityCompat.requestPermissions(NotificationActivity.this, new String[]{POST_NOTIFICATIONS}, 101);
+            ActivityCompat.requestPermissions(NotificationActivity.this, new String[]{POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -67,9 +69,13 @@ public class NotificationActivity extends AppCompatActivity {
         //Agregar información a la notificación que luego sea enviada a la actividad que se abre
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("pid","1612");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE);
         //
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, canal1)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CANAL_DEFAULT)
                 .setSmallIcon(R.drawable.baseline_rocket_launch_24)
                 .setContentTitle("Mi primera notificación")
                 .setContentText("Esta es mi primera notificación en Android :D")
@@ -83,7 +89,7 @@ public class NotificationActivity extends AppCompatActivity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         if (ActivityCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            notificationManager.notify(1, notification);
+            notificationManager.notify(NOTIFICATION_ID, notification);
         }
 
     }
